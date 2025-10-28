@@ -1,5 +1,8 @@
 import { NextResponse, NextRequest } from "next/server";
 import { uploadFile } from "@/lib/gcpUtils";
+import { Queue } from "bullmq";
+
+const queue = new Queue("fileProcessing");
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,6 +26,11 @@ export async function POST(request: NextRequest) {
       cleanFileName,
       file.type
     );
+
+    // Add job to queue
+    await queue.add("fileProcessing", {
+      fileObj,
+    });
 
     return NextResponse.json(
       { message: "File uploaded successfully", fileObj },
