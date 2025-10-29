@@ -1,17 +1,16 @@
 import { NextResponse } from "next/server";
-import { AzureOpenAI } from "openai";
-import { ChatCompletionMessageParam } from "openai/resources/chat/completions.js";
+import OpenAI from "openai";
+import { getVectorStore } from "@/lib/vectorStore";
 
-const openai = new AzureOpenAI({
-  apiKey: process.env.AZURE_OPENAI_API_KEY!,
-  endpoint: process.env.AZURE_OPENAI_API_URL!,
-  apiVersion: process.env.AZURE_OPENAI_VERSION!
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 export async function POST(request: Request) {
   try {
     const { userMessage, fileName } = await request.json();
-    const messages: ChatCompletionMessageParam[] = [
+    const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
       {
         role: "system",
         content: `
@@ -34,36 +33,45 @@ Your responses should be comprehensive yet easy to follow, helping users build b
   `.trim()
       }
     ];
-    messages.push({ role: "user", content: userMessage });
+    const vectorStore = getVectorStore();
+    if (fileName && typeof fileName === "string" && fileName.trim() !== "") {
+      const retriever = vectorStore.asRetriever({ k: 4, filter: { fileName } });
+      const results = await retriever.invoke(userMessage);
+      const contextText = (results as Array<{ pageContent: string; metadata?: { fileName?: string } }>)
+        .map((d) => `Source(${d.metadata?.fileName || "unknown"}):\n${d.pageContent}`)
+        .join("\n\n---\n\n");
+      messages.push({
+        role: "user",
+        content: `Use the following document context to answer. If unrelated, say so.\n\nCONTEXT:\n${contextText}\n\nQUESTION: ${userMessage}`
+      });
+    } else {
+      messages.push({ role: "user", content: userMessage });
+    }
 
-    const stream = await openai.chat.completions.create({
+    const completion = await openai.chat.completions.create({
+      model: process.env.OPENAI_MODEL as string,
       messages,
       stream: true,
-      model: process.env.AZURE_OPENAI_ENGINE as string
+      temperature: 0.2,
     });
 
-    const responseStream = new ReadableStream({
+    const encoder = new TextEncoder();
+    const responseStream = new ReadableStream<Uint8Array>({
       async start(controller) {
         try {
-          for await (const chunk of stream) {
-            let text = undefined;
-            if (chunk.choices && chunk.choices[0]) {
-              text = chunk.choices[0].delta?.content;
-            }
-            if (text) {
-              const encoder = new TextEncoder();
-              controller.enqueue(encoder.encode(text));
-            }
+          for await (const chunk of completion) {
+            const delta = chunk.choices?.[0]?.delta?.content || "";
+            if (delta) controller.enqueue(encoder.encode(delta));
           }
           controller.close();
-        } catch (error) {
-          controller.error(error);
+        } catch (err) {
+          controller.error(err);
         }
       }
     });
 
     return new NextResponse(responseStream, {
-      headers: { "Content-Type": "text/event-stream" }
+      headers: { "Content-Type": "text/plain; charset=utf-8" }
     });
   } catch (error) {
     console.error("Error in POST /api/openai:", error);
