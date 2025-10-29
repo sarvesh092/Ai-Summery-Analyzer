@@ -1,9 +1,12 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import { Storage } from "@google-cloud/storage";
 import path from "path";
 import mime from "mime-types";
 
 const bucketName = process.env.GCLOUD_BUCKET_NAME;
 const keyFilePath = process.env.GCLOUD_KEYFILE_PATH;
+
 
 if (!bucketName || !keyFilePath) {
   throw new Error(
@@ -19,12 +22,6 @@ const bucket = storage.bucket(bucketName);
 
 const allowedMimeTypes = [
   "application/pdf",
-  "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "text/markdown",
-  "text/plain",
-  "application/vnd.ms-excel",
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 ];
 
 export async function uploadFile(
