@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🤖 AI Summary Analyzer
 
-## Getting Started
+An **AI-powered web application** that automates document parsing, semantic search, and smart summary generation using **LangChain**, **OpenAI LLMs**, and **Next.js**.  
+It enables users to upload complex documents (PDF, DOCX, Markdown) and receive intelligent, context-aware summaries — reducing manual reading time and improving information accessibility.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Overview
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Manual document analysis can be time-consuming and inefficient.  
+**AI Summary Analyzer** solves this by leveraging **Large Language Models (LLMs)** to perform real-time document parsing, semantic understanding, and summarization — allowing users to extract insights instantly from multiple file formats.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ✨ Features
 
-## Learn More
+- 🧠 **AI-Powered Summarization:** Uses LangChain and OpenAI models to generate meaningful summaries and context-aware Q&A.
+- 📄 **Multi-Format Support:** Handles PDF, DOCX, and Markdown files through a unified document parsing pipeline.
+- 🔍 **Semantic Search:** Implements pgvector embeddings with LangChain retrievers to deliver relevant, high-accuracy responses.
+- ⚙️ **Asynchronous Processing:** BullMQ-based job queues for background tasks and scalable data processing.
+- 🐳 **Dockerized Microservices:** Enables containerized deployment and modular scalability.
+- ☁️ **Cloud Integration:** Seamless integration with Google Cloud Storage for document handling and distributed workloads.
+- 🧩 **Robust Architecture:** Clean, modular backend design supporting high throughput and future AI model extensions.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🧱 Tech Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Frontend:** Next.js, TypeScript, Tailwind CSS  
+**Backend:** Node.js, Express, LangChain, BullMQ, Redis  
+**AI & Data Layer:** OpenAI API, pgvector, Supabase  
+**Infrastructure:** Docker, Google Cloud Storage  
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

@@ -17,7 +17,7 @@ export function getVectorStore() {
   const client = getSupabaseClient();
   const embeddings = new OpenAIEmbeddings({
     model: "text-embedding-3-small",
-    apiKey: process.env.OPENAI_EMBEDING_API_KEY,
+    apiKey: process.env.OPENAI_API_KEY,
   });
   const vectorStore = new SupabaseVectorStore(embeddings, {
     client,
