@@ -1,6 +1,6 @@
 🤖 AI Summary Analyzer
 An AI-powered web application that automates document parsing, semantic search, and smart summary generation using LangChain, OpenAI LLMs, and Next.js.
-It enables users to upload complex documents (PDF, DOCX, Markdown) and receive intelligent, context-aware summaries — reducing manual reading time and improving information accessibility.
+It enables users to upload complex documents (PDF) and receive intelligent, context-aware summaries — reducing manual reading time and improving information accessibility.
 
 🚀 Overview
 Manual document analysis can be time-consuming and inefficient.
